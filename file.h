@@ -7,7 +7,6 @@
 #include <time.h>
 #include <assert.h>
 #include <unistd.h>
-
 /* MACROS */
 #define MAX_NAME_LENGTH 128
 #define MAX_TYPE_LENGTH 64
@@ -39,7 +38,8 @@ typedef struct File {
     int id;
     char *location;
     char type[MAX_TYPE_LENGTH];
-    double size; /* in KB */
+    double size;  /*in KB*/
+    struct File *next_sibiling;
     int blocks;
     char protection[MAX_PROTECTION_LENGTH];
     time_t creation_time;
@@ -56,5 +56,5 @@ File *copy_file(File *file);
 void information_file(File *file);
 void change_perm_file(File *file, char *perm);
 void rename_file(File *file, char *new_name);
-
+void delete_file(File *file);
 #endif /* FILE_H */

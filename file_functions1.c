@@ -9,7 +9,7 @@ static int file_count = 0;
  * @filepath: Path where the file will be located.
  * Return: Pointer to the newly created File, NULL if error occured.
 */
-File *create_file(char *filename, char *filepath)
+File *create_file(char *filename)
 {
 	File *file = malloc(sizeof(File));
 	time_t current_time;

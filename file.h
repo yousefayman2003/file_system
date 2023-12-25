@@ -49,7 +49,7 @@ typedef struct File {
 } File;
 
 /* function prototype */
-File *create_file(char *filename, char *filepath);
+File *create_file(char *filename);
 char *read_file(File *file);
 int write_file(File *file, char *content);
 File *copy_file(File *file);

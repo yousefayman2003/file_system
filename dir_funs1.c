@@ -8,22 +8,28 @@ char *check_name_created(char *name);
  *
  *
  */
-void create_dir(Dir **new_dir, char *name)
+Dir *create_dir(char *name)
 {
+	Dir *new_dir;
 	time_t current_time;
 
-	*new_dir = malloc(sizeof(Dir));
+	new_dir = malloc(sizeof(Dir));
+	if (new_dir == NULL)
+	{
+		perror("memory allocation error");
+		exit(EXIT_FAILURE);
+	}
 	if (!name)
-		(*new_dir)->name = check_name_created("New folder");
-	(*new_dir)->name = check_name_created(name);
-	(*new_dir)->parent = current_node->current_dir;
-	(*new_dir)->size = 0;
-	(*new_dir)->dir_permissions = "drwxrwxr-x";
+		new_dir->name = check_name_created("New folder");
+	new_dir->name = check_name_created(name);
+	new_dir->size = 0;
+	new_dir->dir_permissions = "drwxrwxr-x";
 	time(&current_time);
-	(*new_dir)->creation_time = current_time;
-	(*new_dir)->creation_time = current_time;
+	new_dir->creation_time = current_time;
+	new_dir->creation_time = current_time;
 	printf("n: %d\n", current_node->current_dir->number_of_sub_dirs);
 	appendSubdir(new_dir);
+	return (new_dir);
 }
 
 /**
@@ -37,25 +43,33 @@ void create_dir(Dir **new_dir, char *name)
  */
 char *check_name_created(char *name)
 {
-	int count = 1;
-	char new_dir_name[50];
-
-	Dir *dir_ptr = current_node->current_dir->first_dir;
-	while (file_ptr != NULL)
+	int i, count = 1;
+	char new_dir_name[50], *new_name;
+	
+	for (i = 0; i < current_node->current_dir->number_of_sub_dirs; i++)
 	{
-		if (name == file_ptr->name)
+		if (strcmp(name, current_node->current_dir->subdirs[i]->name) == 0)
 		{
 			count++;
 		}
-		dir_ptr = dir_ptr->next_sibiling;
 	}
-	if (count == 1)
-		return (name);
-	else
+
+	if (count > 1)
 	{
 		snprintf(new_dir_name, sizeof(new_dir_name), "%d", count);
-		return (strcat(name, new_dir_name));
+		// Allocate memory for the new name (original name + count + null terminator)
+		new_name = malloc(strlen(name) + strlen(new_dir_name) + 1);
+		if (new_name == NULL)
+		{
+			// Handle memory allocation failure
+			return (NULL);
+		}
+
+		strcpy(new_name, name);
+		strcat(new_name, new_dir_name);
+		return (new_name);
 	}
+	return name;
 }
 
 /**
@@ -116,8 +130,8 @@ char *check_name_created(char *name)
 
 	if (dir->subdirs)
 		free(dir->subdirs);
-	free(dir);*/
-}
+	free(dir);
+}*/
 
 /**
  *
@@ -128,19 +142,12 @@ char *check_name_created(char *name)
  */
 void list_dir_content()
 {
-	Dir *dir_ptr = current_node_current_dir->first_dir;
-        File *file_ptr = current_node_current_dir->first_file;
+	int i;
 
-        while (dir_ptr != NULL)
-	{
-		printf("%s\n", dir_ptr->name);
-		dir_ptr = dir_ptr->next_sibiling;
-	}
-	while (file_ptr != NULL)
-        {
-                printf("%s\n", file_ptr->name);
-                file_ptr = file_ptr->next_sibiling;
-        }
+	for (i = 0; i < current_node->current_dir->number_of_sub_dirs; i++)
+		printf("%s\n", current_node->current_dir->subdirs[i]->name);
+	for (i = 0; i < current_node->current_dir->number_of_files; i++)
+                printf("%s\n", current_node->current_dir->files[i]->name);
 }
 
 /**
@@ -150,16 +157,32 @@ void list_dir_content()
  *
  *
  */
+
 void dir_info()
 {
 	if (current_node->current_dir)
-		printf("%s\t%d\t%ld\t%ld\t%s\n", current_node->current_dir->dir_permissions, current_node->current_dir->size, current_node->current_dir->creation_time, current_node->current_dir->last_modification_time, current_node->current_dir->name);
+	{
+		// Convert creation time to string
+		char creation_time_str[30];
+		strftime(creation_time_str, sizeof(creation_time_str), "%Y-%m-%d %H:%M:%S", localtime(&current_node->current_dir->creation_time));
+
+		// Convert modification time to string
+		char modification_time_str[30];
+		strftime(modification_time_str, sizeof(modification_time_str), "%Y-%m-%d %H:%M:%S", localtime(&current_node->current_dir->last_modification_time));
+
+		printf("%s\t%d\t%s\t%s\t%s\n", 
+				current_node->current_dir->dir_permissions, 
+				current_node->current_dir->size, 
+				creation_time_str, 
+				modification_time_str, 
+				current_node->current_dir->name);
+	}
+	else
+		perror("No thing");
 }
 
 char *search_in_dir(char *searched_name)
 {
-	Dir *dir_ptr = current_node_current_dir->first_dir;
-	File *file_ptr = current_node_current_dir->first_file;
 	int i;
 
 	for (i = 0; i < current_node->current_dir->number_of_sub_dirs; i++)

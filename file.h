@@ -33,10 +33,12 @@
  * 		read time of the file
  * @content: String representing the content of the file
 */
+
 typedef struct File {
     char name[MAX_NAME_LENGTH];
     int id;
     char *location;
+    Dir *parent;
     char type[MAX_TYPE_LENGTH];
     double size;  /*in KB*/
     int blocks;

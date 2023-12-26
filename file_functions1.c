@@ -14,7 +14,7 @@ File *create_file(char *filename)
 	File *file = malloc(sizeof(File));
 	time_t current_time;
 	
-	if (!filename || !filepath)
+	if (!filename)
 	{
 		perror("Error missing args");
 		return (NULL);
@@ -45,13 +45,13 @@ File *create_file(char *filename)
 	file->access_time = current_time;
 	
 	file->id = file_count++;
-	file->location = malloc(strlen(filepath) + 1);
+	/*file->location = malloc(strlen(filepath) + 1);
 	if (!(file->location))
         {
                 perror("Error creating the file");
                 return (NULL);
-        }
-	strcpy(file->location, filepath);
+        } */
+	strcpy(file->location, "None");
 
 	/* Splitting filename into name and type */
         char *dot = strrchr(filename, '.');

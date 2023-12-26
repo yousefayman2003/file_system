@@ -39,7 +39,6 @@ typedef struct File {
     char *location;
     char type[MAX_TYPE_LENGTH];
     double size;  /*in KB*/
-    struct File *next_sibiling;
     int blocks;
     char protection[MAX_PROTECTION_LENGTH];
     time_t creation_time;
@@ -48,7 +47,7 @@ typedef struct File {
     char *content;
 } File;
 
-/* function prototype */
+/* file functions prototype */
 File *create_file(char *filename);
 char *read_file(File *file);
 int write_file(File *file, char *content);
@@ -57,4 +56,5 @@ void information_file(File *file);
 void change_perm_file(File *file, char *perm);
 void rename_file(File *file, char *new_name);
 void delete_file(File *file);
+
 #endif /* FILE_H */

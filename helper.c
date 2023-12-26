@@ -73,7 +73,7 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 	if (strcmp(command, "help") == 0)
 	{
 		help();
-		status = 0
+		status = 0;
 	}
 	/*
 	else if (strcmp(command, "touch") == 0)
@@ -112,5 +112,5 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 		status = 0;
 	}
 	*/
-	return (-1);
+	return (status);
 }

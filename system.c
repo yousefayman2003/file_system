@@ -30,12 +30,12 @@ int main(void)
 		}
 		
 		status = handle_command(command, args);
-
-		if (status)
+		
+		if (status == 1)
 			break;
 		else if (status == -1)
 		{
-			printf("Error: Invalid command.\n")
+			printf("Error: Invalid command.\n");
 		}
 	}
 

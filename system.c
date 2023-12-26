@@ -1,5 +1,7 @@
-#include "file.h"
-#include "helper.h"
+#include "dir.h"
+
+Current *current_node;
+Dir root;
 
 int main(void)
 {
@@ -8,7 +10,8 @@ int main(void)
         char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH];
         int num_args = 0, status = 0;
 
-	
+	current_node = initialize_current_node();
+	create_root(&root);
 	while (1)
 	{
         	printf("Enter command and arguments: ");
@@ -20,14 +23,14 @@ int main(void)
         	/* Parse the command and arguments */
         	parse_command(input, command, args, &num_args);
 
-		if (num_args == 0 &&
+		/*if (num_args == 0 &&
 			strcmp(command, "help") != 0 &&
 			strcmp(command, "quit") != 0
 			)
 		{
 			printf("Error: Enter right number of arguments.\n");
 			continue;
-		}
+		}*/
 		
 		status = handle_command(command, args);
 		

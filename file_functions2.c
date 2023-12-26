@@ -1,5 +1,7 @@
-#include "file.h"
+/**#include "file.h"
+*/
 
+#include "dir.h"
 /**
 * change_perm_file - changes file permissions
 * @file: given file
@@ -48,4 +50,51 @@ void rename_file(File *file, char *new_name)
 		file->type[0] = '\0';
 	}
 
+}
+
+void appendFile(File *new_file)
+{
+        if (current_node->current_dir->files == NULL)
+        {
+                current_node->current_dir->files = malloc(sizeof(File *));
+                if (current_node->current_dir->files == NULL)
+                {
+                        fprintf(stderr, "Memory allocation error\n");
+                        exit(EXIT_FAILURE);
+                }
+        }
+        else
+        {
+                if (current_node->current_dir->number_of_sub_dirs == (sizeof(current_node->current_dir->files) / sizeof(File *)))
+                {
+                        /* Reallocate memory for the subdirs array */
+                        current_node->current_dir->files = realloc(current_node->current_dir->files, (current_node->current_dir->number_of_files) * 3 * sizeof(File *));
+                        if (current_node->current_dir->files == NULL)
+                        {
+                                fprintf(stderr, "Memory allocation error\n");
+                                exit(EXIT_FAILURE);
+                        }
+                }
+        }
+        /* Allocate memory for the new subdirectory */
+        current_node->current_dir->files[current_node->current_dir->number_of_files] = malloc(sizeof(File));
+        if (current_node->current_dir->files[current_node->current_dir->number_of_files] == NULL)
+        {
+                fprintf(stderr, "Memory allocation error\n");
+                exit(EXIT_FAILURE);
+        }
+
+        /* Initialize the subdirectory */
+        current_node->current_dir->files[current_node->current_dir->number_of_files] = new_file;
+        if (current_node->current_dir->files[current_node->current_dir->number_of_files] == NULL)
+        {
+                fprintf(stderr, "Memory allocation error\n");
+                exit(EXIT_FAILURE);
+        }
+
+        /* set parent */
+        current_node->current_dir->files[current_node->current_dir->number_of_files]->parent = current_node->current_dir;
+
+        /* Increment the number of subdirectories */
+        current_node->current_dir->number_of_files++;
 }

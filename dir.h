@@ -4,14 +4,40 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-/*#include "file.h"*/
+#include <assert.h>
 
 #define MAX_NAME_LENGTH 128
 #define MAX_TYPE_LENGTH 64
 #define MAX_PROTECTION_LENGTH 4
 #define BLOCK_SIZE 32
 
+#define MAX_COMMAND_LENGTH 50
+#define MAX_ARGS_LENGTH 50
+#define MAX_TOTAL_ARGS 10
+
 typedef struct Dir Dir;
+
+/*
+ * struct file - Represents attributes of a file in a file system
+ *
+ * @name:       Name of the file (e.g., "project.docx")
+ * @identifier: Unique number identifying the file within
+ *               the file system (e.g., 91011)
+ * @location:   Path indicating the logical location of the
+ *               file (e.g., "C:\\Users\\YourUsername\\Documents")
+ * @type:       Type of the file (e.g., "Document File")
+ * @size:       Current size of the file in kilobytes (KB)
+ * @blocks:     Number of blocks in which the file is stored
+ * @protection: Access rights controlling read (r), write (w),
+ *              and execute (x) permissions (e.g., "rw-")
+ * @creationTime:      Timestamp indicating the file creation time
+ * @modificationTime:  Timestamp indicating the last modification
+ *                      time of the file's content
+ * @accessTime: Timestamp indicating the last accessed or
+ *              read time of the file
+ * @content: String representing the content of the file
+*/
+
 typedef struct File {
     char name[MAX_NAME_LENGTH];
     int id;
@@ -57,14 +83,11 @@ typedef struct Current
 
 
 extern Current *current_node;
+extern Dir root;
 
 Current *initialize_current_node();
-/**
- * create_dir - create new directory.
- * @name: name of file created.
- * Return: 1 if successfully created and 0 if else.
- */
-void create_root();
+
+void create_root(Dir *root);
 Dir *create_dir(char *name);
 void delete_dir(Dir *dir);
 void list_dir_content();
@@ -75,4 +98,21 @@ void get_back();
 void go_to_dir(char *name);
 void go_to_file(File *file);
 void appendSubdir(Dir *new_dir);
+void appendFile(File *new_file);
+File *create_file(char *filename);
+
+/* file functions prototype */
+File *create_file(char *filename);
+char *read_file(File *file);
+int write_file(File *file, char *content);
+File *copy_file(File *file);
+void information_file(File *file);
+void change_perm_file(File *file, char *perm);
+void rename_file(File *file, char *new_name);
+void delete_file(File *file);
+void appendFile(File *new_file);
+
+void help();
+void parse_command(char *input, char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH], int *numArgs);
+int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH]);
 #endif

@@ -51,12 +51,12 @@ typedef struct File {
 
 /* file functions prototype */
 File *create_file(char *filename);
-char *read_file(File *file);
+/**char *read_file(File *file);
 int write_file(File *file, char *content);
 File *copy_file(File *file);
 void information_file(File *file);
 void change_perm_file(File *file, char *perm);
 void rename_file(File *file, char *new_name);
-void delete_file(File *file);
-
+void delete_file(File *file);*/
+void appendFile(File *new_file);
 #endif /* FILE_H */

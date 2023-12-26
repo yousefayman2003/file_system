@@ -1,5 +1,5 @@
-#include "file.h"
-
+/*#include "file.h"*/
+#include "dir.h"
 /* Counter for file identifiers */
 static int file_count = 0;
 
@@ -51,7 +51,7 @@ File *create_file(char *filename)
                 perror("Error creating the file");
                 return (NULL);
         } */
-	strcpy(file->location, "None");
+	/*strcpy(file->location, "None");*/
 
 	/* Splitting filename into name and type */
         char *dot = strrchr(filename, '.');
@@ -74,6 +74,7 @@ File *create_file(char *filename)
                 /* set type to an empty string */
                 strcpy(file->type, "");
         }
+	appendFile(file);
 	return (file);
 }
 

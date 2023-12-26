@@ -1,7 +1,4 @@
-#include "helper.h"
-#include "file.h"
 #include "dir.h"
-
 /**
  * help - Displays available commands and their usage.
 */
@@ -70,17 +67,27 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 
 	if (strcmp(command, "quit") == 0)
 		status = 1;
-	if (strcmp(command, "help") == 0)
+	else if (strcmp(command, "help") == 0)
 	{
 		help();
 		status = 0;
 	}
-	/*
+	else if (strcmp(command, "ls") == 0)
+	{
+		list_dir_content();
+		status = 0;
+	}
+	else if (strcmp(command, "mkdir") == 0)
+	{
+		create_dir(args[0]);
+		status = 0;
+	}
 	else if (strcmp(command, "touch") == 0)
 	{
 		create_file(args[0]);
 		status = 0;
 	}
+	/*
 	else if (strcmp(command, "rename") == 0)
 	{
 		rename_file(args[0], args[1]);

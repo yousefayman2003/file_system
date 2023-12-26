@@ -22,7 +22,7 @@ int main(void)
 
         	/* Parse the command and arguments */
         	parse_command(input, command, args, &num_args);
-
+		
 		/*if (num_args == 0 &&
 			strcmp(command, "help") != 0 &&
 			strcmp(command, "quit") != 0

@@ -1,39 +1,91 @@
-/**#include "file.h"
-*/
-
 #include "dir.h"
+
+
+void get_chars_before_dot(char *input, char *result)
+{
+	/* Find the position of the dot */
+	char *dot_pos = strchr(input, '.');
+	
+	if (dot_pos != NULL)
+	{
+		int length_before_dot = dot_pos - input;
+		strncpy(result, input, length_before_dot);
+		result[length_before_dot] = '\0';
+	} 
+	else
+		strcpy(result, input);
+}
+
+File *get_file(int id)
+{
+	int i, file_id;
+        File *file;
+	
+        for (i = 0; i < current_node->current_dir->number_of_files; i++)
+        {
+                file_id = current_node->current_dir->files[i]->id;
+                if (file_id == id)
+                {
+                        file = current_node->current_dir->files[i];
+			return (file);
+                }
+        }
+
+        return (NULL);
+}
+
 /**
 * change_perm_file - changes file permissions
-* @file: given file
+* @id: file id
 * @perm: new file permission
 */
-void change_perm_file(File *file, char *perm)
+void change_perm_file(int id, char *perm)
 {
-	if (file == NULL || perm == NULL)
+	File *file;
+	
+	if (id == -1)
 	{
-		perror("Error Couldn't change permission");
+		printf("Error: File not found.");
 		return;
 	}
+	if (perm == NULL)
+	{
+		printf("Error Couldn't change permission.");
+		return;
+	}
+
+	file = get_file(id);
 	strncpy(file->protection, perm, MAX_PROTECTION_LENGTH - 1);
 	file->protection[MAX_PROTECTION_LENGTH - 1] = '\0';
 }
 
 /**
  * rename_file - Renames a file
- * @file: Pointer to the file
+ * @id: file id
  * @new_name: New name for the file
  */
-void rename_file(File *file, char *new_name)
+void rename_file(int id, char *new_name)
 {
-	if (file == NULL || new_name == NULL)
+	char *dot;
+	int i;
+	File *file;
+
+	if (id == -1 || new_name == NULL)
 	{
-	perror("Error: Couldn't change name");
-	return;
+		printf("Error: Couldn't change name\n");
+		return;
+	}
+	/* get file with that id */
+	file = get_file(id);
+
+	if (file == NULL)
+	{
+		perror("Error: File is not found.");
+		return;
 	}
 
 	/* Find the last dot in the new name */
-	char *dot = strrchr(new_name, '.');
-
+        dot = strrchr(new_name, '.');
 	if (dot != NULL)
 	{
 		strncpy(file->name, new_name, dot - new_name);

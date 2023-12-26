@@ -80,13 +80,16 @@ File *create_file(char *filename)
 
 /**
  * read_file - reads the content of a file
- * @file: Pointer to File to read
+ * @id: file id
  * Return: content of file
 */
-char *read_file(File *file)
+char *read_file(int id)
 {
-	if (file != NULL)
+	File *file;
+
+	if (id != -1)
 	{
+		file = get_file(id);
 		time(&file->access_time);
 		return (file->content);
 	}
@@ -95,18 +98,26 @@ char *read_file(File *file)
 
 /**
  * write_file - write content to a file
- * @file: Poiner to File to write in
+ * @id: file id
  * @content: content to write
  * Return: 0 on success, -1 on fail
 */
-int write_file(File *file, char *content)
+int write_file(int id, char *content)
 {
-	if (!file || !content)
+	File *file;
+
+	if (id == -1)
 	{
-		perror("Error missing args");
+		printf("File not found.\n");
+		return (-1);
+	}
+	if (!content)
+	{
+		printf("Missing content to write.");
 		return (-1);
 	}
 	
+	file = get_file(id);
 	/* Free exising content (if any) */
 	if (file->content)
 	{
@@ -137,11 +148,12 @@ int write_file(File *file, char *content)
 
 /**
  * copy_file - copies a file
- * @file: file to copy
+ * @id: file id
  * Return: Copied file, or NULL if failed
 */
-File *copy_file(File *file)
+File *copy_file(int id)
 {
+	File *file = get_file(id);
 	File *copy = malloc(sizeof(File));
 	
 	if (file == NULL)
@@ -184,19 +196,22 @@ File *copy_file(File *file)
 
 /**
  * information_file - retrieves all information about a file
- * @file: given file
+ * @id: file id
 */
-void information_file(File *file)
+void information_file(int id)
 {
-	if (file == NULL) {
-		perror("File pointer is NULL. Cannot retrieve information.\n");
+	File *file = get_file(id);
+
+	if (file == NULL)
+	{
+		printf("File is not found.\n");
 		return;
 	}
 
 	printf("File Information:\n");
 	printf("Name: %s\n", file->name);
 	printf("Id: %d\n", file->id);
-	printf("Location: %s\n", file->location);
+	//printf("Location: %s\n", file->location);
 	printf("Type: %s\n", file->type);
 	printf("Size: %.2f KB\n", file->size);
 	printf("Blocks: %d\n", file->blocks);

@@ -28,26 +28,26 @@ void parse_command(char *input, char *command, char args[MAX_TOTAL_ARGS][MAX_ARG
 {
         /* Tokenize the input string based on space delimiter */
         char *token = strtok(input, " ");
-        int argCount = 0;
+        int argCount = 0, i;
 
         if (token != NULL)
 	{
 		/* Store the command */
                 strcpy(command, token);
                 argCount++;
-		
+
 		/* Move to the next token */
                 token = strtok(NULL, " ");
 
-                while (token != NULL && argCount < MAX_TOTAL_ARGS)
+               	while (token != NULL && argCount < MAX_TOTAL_ARGS)
 		{
 			/* Store the arguments */
-                        strcpy(args[argCount - 1], token);
-                        argCount++;
-                        token = strtok(NULL, " ");
-                }
-        }
-
+                       	strcpy(args[argCount - 1], token);
+                       	argCount++;
+                       	token = strtok(NULL, " ");
+               	}
+	}
+	args[argCount - 1][0] = '\0';
         *numArgs = argCount - 1;
 }
 
@@ -63,8 +63,8 @@ void parse_command(char *input, char *command, char args[MAX_TOTAL_ARGS][MAX_ARG
 */
 int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 {
-	int status = -1;
-
+	int status = -1, id;
+	
 	if (strcmp(command, "quit") == 0)
 		status = 1;
 	else if (strcmp(command, "help") == 0)
@@ -84,40 +84,45 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 	}
 	else if (strcmp(command, "touch") == 0)
 	{
+		id = get_id(args[0]);
 		create_file(args[0]);
 		status = 0;
 	}
-	/*
+	
 	else if (strcmp(command, "rename") == 0)
 	{
-		rename_file(args[0], args[1]);
+		id = get_id(args[0]);
+		rename_file(id, args[1]);
 		status = 0;
 	}
 	else if (strcmp(command, "chmod") == 0)
 	{
-		change_perm_file(args[0], args[1]);
+		id = get_id(args[0]);
+		change_perm_file(id, args[1]);
 		status = 0;
 	}
 	else if (strcmp(command, "write") == 0)
 	{
-		write_file(args[0], args[1]);
+		id = get_id(args[0]);
+		write_file(id, args[1]);
 		status = 0;
 	}
-	else if (strcmp(comand, "read") == 0)
+	else if (strcmp(command, "read") == 0)
 	{
-		read_file(args[0]);
+		char *content;
+		id = get_id(args[0]);
+		content = read_file(id);
+		if (content != NULL)
+		{
+			printf("%s\n", content);
+		}
 		status = 0;
 	}
 	else if (strcmp(command, "info") == 0)
 	{
-		check_info_file(args[0]);
+		id = get_id(args[0]);
+		information_file(id);
 		status = 0;
 	}
-	else if (strcmp(command, "mkdir") == 0)
-	{
-		create_dir(args);
-		status = 0;
-	}
-	*/
 	return (status);
 }

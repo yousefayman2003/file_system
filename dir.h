@@ -103,14 +103,18 @@ File *create_file(char *filename);
 
 /* file functions prototype */
 File *create_file(char *filename);
-char *read_file(File *file);
-int write_file(File *file, char *content);
-File *copy_file(File *file);
-void information_file(File *file);
-void change_perm_file(File *file, char *perm);
-void rename_file(File *file, char *new_name);
-void delete_file(File *file);
+char *read_file(int id);
+int write_file(int id, char *content);
+File *copy_file(int id);
+void information_file(int id);
+void change_perm_file(int id, char *perm);
+void rename_file(int id, char *new_name);
+void delete_file(int id);
 void appendFile(File *new_file);
+int get_id(char *file);
+File *get_file(int id);
+void get_chars_before_dot(char *input, char *result);
+void get_chars_after_dot(char *input, char *result);
 
 void help();
 void parse_command(char *input, char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH], int *numArgs);

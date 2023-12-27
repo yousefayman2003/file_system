@@ -6,8 +6,8 @@ void help()
 {
 	printf("Allowed commands: `help`, `touch`\n \
 		`read`, `write`, `chmod`, `info`, `rename`\n");
-	printf("==============================================\n\n");
-	printf("help:  show available command and explain them\n");
+	printf("=====================================================\n\n");
+	printf("help:  show available command and explain them\n\n");
 	printf("touch:  create an empty file.\nUsage: touch (filename).\n\n");
 	printf("read:  reads content of a file.\nUsage: read (filename).\n\n");
 	printf("write: write content to a file.\nUsage: write (filename) (content)\n\n");
@@ -122,6 +122,12 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 	{
 		id = get_id(args[0]);
 		information_file(id);
+		status = 0;
+	}
+	else if (strcmp(command, "delete") == 0)
+	{
+		id = get_id(args[0]);
+		delete_file(id);
 		status = 0;
 	}
 	return (status);

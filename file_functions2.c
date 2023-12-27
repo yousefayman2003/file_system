@@ -45,12 +45,12 @@ void change_perm_file(int id, char *perm)
 	
 	if (id == -1)
 	{
-		printf("Error: File not found.");
+		printf("Error: File not found.\n");
 		return;
 	}
 	if (perm == NULL)
 	{
-		printf("Error Couldn't change permission.");
+		printf("Error Couldn't change permission.\n");
 		return;
 	}
 

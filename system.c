@@ -12,9 +12,10 @@ int main(void)
 
 	current_node = initialize_current_node();
 	create_root(&root);
+	printf("Welcome to our file system.\n\n Enter help to check available commands.\n\n");
 	while (1)
 	{
-        	printf("Enter command and arguments: ");
+        	printf("$: ");
         	fgets(input, sizeof(input), stdin);
 
         	/* Remove the newline character from input */

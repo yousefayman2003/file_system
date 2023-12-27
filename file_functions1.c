@@ -149,9 +149,9 @@ int write_file(int id, char *content)
 /**
  * copy_file - copies a file
  * @id: file id
- * @parent: parent directory.
+ * @path: path to copy at.
 */
-void *copy_file(int id, char *parent)
+void copy_file(int id, char *path)
 {
 	File *file, *copy;
 	if (id == -1)
@@ -163,12 +163,12 @@ void *copy_file(int id, char *parent)
 	copy = malloc(sizeof(File));
 	
 	if (file == NULL)
-		return NULL;
+		return;
 
 	if (!copy)
 	{
 		perror("Error couldn't copy file");
-		return (NULL);
+		return;
 	}
 
 	/* Copy the attributes of the original file to the new file */
@@ -191,13 +191,11 @@ void *copy_file(int id, char *parent)
 	{
 		perror("Error: Memory allocation failed for content or location");
 		free(copy);
-		return (NULL);
+		return;
 	}
 	strcpy(copy->content, file->content);
 	strcpy(copy->location, file->location);
 	strcpy(copy->protection, file->protection);
-	
-	return (copy);
 }
 
 /**

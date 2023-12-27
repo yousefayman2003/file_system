@@ -105,7 +105,7 @@ File *create_file(char *filename);
 File *create_file(char *filename);
 char *read_file(int id);
 int write_file(int id, char *content);
-void *copy_file(int id, char *parent);
+void copy_file(int id, char *path);
 void information_file(int id);
 void change_perm_file(int id, char *perm);
 void rename_file(int id, char *new_name);

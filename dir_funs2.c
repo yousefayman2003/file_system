@@ -19,6 +19,7 @@ char *search_in_dir(char *searched_name)
                         return (current_node->current_dir->files[i]->name);
                 }
         }
+	return (NULL);
 }
 
 /**

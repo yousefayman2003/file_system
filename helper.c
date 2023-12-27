@@ -5,7 +5,7 @@
 void help()
 {
 	printf("Allowed commands: `help`, `touch`\n \
-		`read`, `write`, `chmod`, `info`, `rename`\n");
+		`read`, `write`, `chmod`, `info`, `rename`, `mkdir`, `cd`, `copy`, `move`\n");
 	printf("=====================================================\n\n");
 	printf("help:  show available command and explain them\n\n");
 	printf("touch:  create an empty file.\nUsage: touch (filename).\n\n");
@@ -14,6 +14,10 @@ void help()
 	printf("chmod: changes permission of a file.\nUsage: chmod (filename)\n\n");
 	printf("info: display information about a file.\nUsage: info (filename)\n\n");
 	printf("rename: renames a file.\nUsage: rename (filename)\n\n");
+	printf("mkdir: Creates a Directory.\nUsage: mkdir (directory name)\n\n");
+	printf("cd: changes directory.\nUsage: cd (directory name)\n\n");
+	printf("copy: Copies a file to a specific location.\nUsage: copy (filename) (path)\n\n");
+	printf("move: moves a file to a specific location.\nUsage: move (filename) (path)\n\n");
 }
 
 /**
@@ -28,7 +32,7 @@ void parse_command(char *input, char *command, char args[MAX_TOTAL_ARGS][MAX_ARG
 {
         /* Tokenize the input string based on space delimiter */
         char *token = strtok(input, " ");
-        int argCount = 0, i;
+        int argCount = 0;
 
         if (token != NULL)
 	{
@@ -150,11 +154,23 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 		information_file(id);
 		status = 0;
 	}
-	else if (strcmp(command, "delete") == 0)
+	else if (strcmp(command, "move") == 0)
+	{
+		id = get_id(args[0]);
+		move_file(id, args[1], 1);
+		status = 0;
+	}
+	else if(strcmp(command, "copy") == 0)
+	{
+		id = get_id(args[0]);
+		move_file(id, args[1], 0);
+		status = 0;
+	}
+	/*else if (strcmp(command, "delete") == 0)
 	{
 		id = get_id(args[0]);
 		delete_file(id);
 		status = 0;
-	}
+	}*/
 	return (status);
 }

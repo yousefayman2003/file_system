@@ -27,7 +27,7 @@ File *create_file(char *filename)
 	}
 	
 	/* initalize values */
-	file->size = 0;
+	file->size = 0.0;
 	file->blocks = 0;
 	strcpy(file->protection, "644");
 	file->content = malloc(128);
@@ -44,15 +44,7 @@ File *create_file(char *filename)
 	file->modification_time = current_time;
 	file->access_time = current_time;
 	
-	file->id = file_count++;
-	/*file->location = malloc(strlen(filepath) + 1);
-	if (!(file->location))
-        {
-                perror("Error creating the file");
-                return (NULL);
-        } */
-	/*strcpy(file->location, "None");*/
-
+	file->id = file_count++;	
 	/* Splitting filename into name and type */
         char *dot = strrchr(filename, '.');
         if (dot != NULL)
@@ -135,7 +127,7 @@ int write_file(int id, char *content)
 	strcpy(file->content, content);
 
 	/* Calculate size */
-	file->size = (sizeof(content) / 1000);
+	file->size = ((double)sizeof(content) / 1000.0);
 	
 	/* Calculate blocks */
 	file->blocks = (sizeof(content) / BLOCK_SIZE) + 1;
@@ -144,58 +136,6 @@ int write_file(int id, char *content)
 	time(&file->modification_time);
 
 	return (0);
-}
-
-/**
- * copy_file - copies a file
- * @id: file id
- * @path: path to copy at.
-*/
-void copy_file(int id, char *path)
-{
-	File *file, *copy;
-	if (id == -1)
-	{
-		printf("Error: File not found.\n");
-		return;
-	}
-	file = get_file(id);
-	copy = malloc(sizeof(File));
-	
-	if (file == NULL)
-		return;
-
-	if (!copy)
-	{
-		perror("Error couldn't copy file");
-		return;
-	}
-
-	/* Copy the attributes of the original file to the new file */
-	copy->id = file->id;
-	copy->size = file->size;
-	copy->blocks = file->blocks;
-	copy->creation_time = file->creation_time;
-	copy->modification_time = file->modification_time;
-	copy->access_time = file->access_time;
-
-	/* Allocate memory for string attributes and copy content */
-	strcpy(copy->name, file->name);
-	strcpy(copy->type, file->type);
-
-	/* Allocate memory for content and location strings */
-	copy->content = malloc(strlen(file->content) + 1);
-	copy->location = malloc(strlen(file->location) + 1);
-
-	if (copy->content == NULL || copy->location == NULL)
-	{
-		perror("Error: Memory allocation failed for content or location");
-		free(copy);
-		return;
-	}
-	strcpy(copy->content, file->content);
-	strcpy(copy->location, file->location);
-	strcpy(copy->protection, file->protection);
 }
 
 /**
@@ -215,7 +155,7 @@ void information_file(int id)
 	printf("File Information:\n");
 	printf("Name: %s\n", file->name);
 	printf("Id: %d\n", file->id);
-	//printf("Location: %s\n", file->location);
+	printf("Location: %s\n", file->location);
 	printf("Type: %s\n", file->type);
 	printf("Size: %.2f KB\n", file->size);
 	printf("Blocks: %d\n", file->blocks);

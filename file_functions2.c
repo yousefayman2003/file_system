@@ -1,6 +1,14 @@
 #include "dir.h"
 
-
+/**
+ * get_chars_before_dot - Extracts characters before the dot from a string.
+ *
+ * @input: The input string to process.
+ * @result: Pointer to store the characters before the dot.
+ *
+ * Return:
+ * This function does not return anything as the result is stored in 'result'.
+*/
 void get_chars_before_dot(char *input, char *result)
 {
 	/* Find the position of the dot */
@@ -16,6 +24,11 @@ void get_chars_before_dot(char *input, char *result)
 		strcpy(result, input);
 }
 
+/**
+ * get_file - gets a file with a specific id
+ * @id: file id
+ * Return: File with that id
+*/
 File *get_file(int id)
 {
 	int i, file_id;
@@ -63,11 +76,10 @@ void change_perm_file(int id, char *perm)
  * rename_file - Renames a file
  * @id: file id
  * @new_name: New name for the file
- */
+*/
 void rename_file(int id, char *new_name)
 {
 	char *dot;
-	int i;
 	File *file;
 
 	if (id == -1 || new_name == NULL)
@@ -104,23 +116,32 @@ void rename_file(int id, char *new_name)
 
 }
 
+/**
+ * appendFile - Adds a new file to the current directory.
+ * @new_file: Pointer to the new file to be appended.
+*/
 void appendFile(File *new_file)
 {
+	char *parent_path;
+
         if (current_node->current_dir->files == NULL)
         {
-                current_node->current_dir->files = malloc(sizeof(File *));
+                current_node->current_dir->files = malloc(INITIAL_FILE_SPACE * sizeof(File *));
                 if (current_node->current_dir->files == NULL)
                 {
                         fprintf(stderr, "Memory allocation error\n");
                         exit(EXIT_FAILURE);
                 }
         }
-        else
+        else	
         {
-                if (current_node->current_dir->number_of_sub_dirs == (sizeof(current_node->current_dir->files) / sizeof(File *)))
+		static int max_files = INITIAL_FILE_SPACE;
+		
+		if (current_node->current_dir->number_of_files >= max_files)
                 {
                         /* Reallocate memory for the files array */
-                        current_node->current_dir->files = realloc(current_node->current_dir->files, (current_node->current_dir->number_of_files) * 3 * sizeof(File *));
+			max_files *= 2;
+                        current_node->current_dir->files = realloc(current_node->current_dir->files, max_files * sizeof(File *));
                         if (current_node->current_dir->files == NULL)
                         {
                                 fprintf(stderr, "Memory allocation error\n");
@@ -148,8 +169,9 @@ void appendFile(File *new_file)
         current_node->current_dir->files[current_node->current_dir->number_of_files]->parent = current_node->current_dir;
 
 	/* set path */
-	printf("location file: %s\n", new_file->location);
-	new_file->location = strdup(make_path(current_node->current_dir));
+	parent_path = strdup(current_node->current_dir->path);
+        new_file->location = strdup(strcat(strcat(parent_path, "/"), new_file->name));
+	free(parent_path);
         /* Increment the number of subdirectories */
         current_node->current_dir->number_of_files++;
 }

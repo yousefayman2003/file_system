@@ -14,6 +14,8 @@
 #define MAX_COMMAND_LENGTH 50
 #define MAX_ARGS_LENGTH 50
 #define MAX_TOTAL_ARGS 10
+#define MAX_TOKENS 100
+#define INITIAL_FILE_SPACE 10
 
 typedef struct Dir Dir;
 
@@ -81,12 +83,12 @@ typedef struct Current
 	File *current_file;
 } Current;
 
-
 extern Current *current_node;
 extern Dir root;
 
 Current *initialize_current_node();
 
+/* directory functions prototype */
 void create_root(Dir *root);
 Dir *create_dir(char *name);
 void delete_dir_name(const char *dir_name);
@@ -108,7 +110,6 @@ void get_to_root();
 File *create_file(char *filename);
 char *read_file(int id);
 int write_file(int id, char *content);
-void copy_file(int id, char *path);
 void information_file(int id);
 void change_perm_file(int id, char *perm);
 void rename_file(int id, char *new_name);
@@ -119,10 +120,13 @@ void delete_file_by_id(int file_id);
 void appendFile(File *new_file);
 int get_id(char *file);
 File *get_file(int id);
+void move_file(int id, char *location, int delete);
+
+/* helper functions prototype */
 void get_chars_before_dot(char *input, char *result);
 void get_chars_after_dot(char *input, char *result);
-
 void help();
 void parse_command(char *input, char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH], int *numArgs);
 int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH]);
+
 #endif

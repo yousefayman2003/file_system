@@ -77,6 +77,11 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 		list_dir_content();
 		status = 0;
 	}
+	else if (strcmp(command, "inf") == 0)
+	{
+		dir_info();
+		status = 0;
+	}
 	else if (strcmp(command, "mkdir") == 0)
 	{
 		create_dir(args[0]);
@@ -88,7 +93,28 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 		create_file(args[0]);
 		status = 0;
 	}
-	
+	else if (strcmp(command, "cd") == 0)
+	{
+		/*if (args[0][0] == '\0')
+		{
+			current_node->current_dir = &root;
+		}*/
+		if (strcmp(args[0], "-") == 0)
+			get_back();
+		else
+			go_to_dir(args[0]);
+		status = 0;
+	}
+	/*else if (strcmp(command, "rm") == 0)
+	{
+		delete_dir_name(args[0]);
+		status = 0;
+	}*/
+	/**else if (strcmp(args[0], "rm_f"))
+        {
+                find(args[1]);
+                status = 0;
+        }*/
 	else if (strcmp(command, "rename") == 0)
 	{
 		id = get_id(args[0]);

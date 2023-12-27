@@ -10,6 +10,7 @@ void create_root(Dir *root)
 	
 	root->name = "root";
 	root->parent = NULL;
+	root->path = strdup("/root");
 	root->size = 0;
 	root->dir_permissions = "drwxrwxrwx";
 	root->files = NULL;
@@ -25,16 +26,24 @@ void create_root(Dir *root)
 
 void get_back()
 {
-	if (!current_node->current_file)
+	if (current_node->current_file != NULL)
 	{
-		current_node->current_dir = current_node->current_dir->parent;
+		/* current_node->current_dir = current_node->current_file->parent; */
 		current_node->current_file = NULL;
 	}
-	else if (!current_node->current_dir)
-		current_node->current_dir = current_node->current_dir->parent;
+	else if (current_node->current_dir->parent == NULL)
+		printf("/root\n");
 	else
-		printf("your are already in the root");		/* if you are already in the root the parent is NULL*/
+		current_node->current_dir = current_node->current_dir->parent;
 }
+
+
+void get_to_root()
+{
+
+	current_node->current_dir = &root;
+}
+
 void go_to_dir(char *name)
 {
 	int i;
@@ -42,12 +51,12 @@ void go_to_dir(char *name)
 
 	if (current_node->current_file != NULL)
         {
-                printf("Command no recognized, you are already in a file\n");
+                printf("Command not recognized, you are already in a file\n");
                 return;
         }
 	for (i = 0; i < current_node->current_dir->number_of_sub_dirs; i++)
 	{
-		if (current_node->current_dir->subdirs[i]->name == name)
+		if (strcmp(current_node->current_dir->subdirs[i]->name, name) == 0)
 		{
 			found = 1;
 			current_node->current_dir = current_node->current_dir->subdirs[i];
@@ -80,7 +89,8 @@ void go_to_file(File *file)
 	if (found == 0)
 		perror("file not found\n");
 }
-Current* initialize_current_node()
+
+Current *initialize_current_node()
 {
 	Current *node = (Current*)malloc(sizeof(Current));
 	if (node != NULL) {
@@ -89,8 +99,8 @@ Current* initialize_current_node()
 	}
 	return node;
 }
-   
-void appendSubdir(Dir *new_dir)
+
+void appendSubdir(Dir **new_dir)
 {
 	if (current_node->current_dir->subdirs == NULL)
 	{
@@ -103,19 +113,19 @@ void appendSubdir(Dir *new_dir)
 	}
 	else
 	{
-		if (current_node->current_dir->number_of_sub_dirs == (sizeof(current_node->current_dir->subdirs) / sizeof(Dir *)))
-		{
+		/**if (current_node->current_dir->number_of_sub_dirs == (sizeof(current_node->current_dir->subdirs) / sizeof(Dir *)))
+		{*/
 			/* Reallocate memory for the subdirs array */
-			current_node->current_dir->subdirs = realloc(current_node->current_dir->subdirs, (current_node->current_dir->number_of_sub_dirs) * 3 * sizeof(Dir *));
-			if (current_node->current_dir->subdirs == NULL)
-			{
-				fprintf(stderr, "Memory allocation error\n");
-				exit(EXIT_FAILURE);
-			}
+		current_node->current_dir->subdirs = realloc(current_node->current_dir->subdirs, ((current_node->current_dir->number_of_sub_dirs + 1) * 3) * sizeof(Dir *));
+		if (current_node->current_dir->subdirs == NULL)
+		{
+			fprintf(stderr, "Memory allocation error\n");
+			exit(EXIT_FAILURE);
 		}
+		/*}*/
 	}
 	/* Allocate memory for the new subdirectory */
-	current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = malloc(sizeof(Dir));
+	current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = malloc(sizeof(Dir *));
 	if (current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] == NULL)
 	{
 		fprintf(stderr, "Memory allocation error\n");
@@ -123,15 +133,15 @@ void appendSubdir(Dir *new_dir)
 	}
 
 	/* Initialize the subdirectory */
-	current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = new_dir;
+	current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = *new_dir;
 	if (current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] == NULL)
 	{
 		fprintf(stderr, "Memory allocation error\n");
 		exit(EXIT_FAILURE);
 	}
 
+	/*printf("%s\n", current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs]->path);*/
 	/* set parent */
-	current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs]->parent = current_node->current_dir;
 
 	/* Increment the number of subdirectories */
 	current_node->current_dir->number_of_sub_dirs++;

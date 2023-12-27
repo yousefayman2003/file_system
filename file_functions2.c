@@ -119,7 +119,7 @@ void appendFile(File *new_file)
         {
                 if (current_node->current_dir->number_of_sub_dirs == (sizeof(current_node->current_dir->files) / sizeof(File *)))
                 {
-                        /* Reallocate memory for the subdirs array */
+                        /* Reallocate memory for the files array */
                         current_node->current_dir->files = realloc(current_node->current_dir->files, (current_node->current_dir->number_of_files) * 3 * sizeof(File *));
                         if (current_node->current_dir->files == NULL)
                         {
@@ -128,7 +128,7 @@ void appendFile(File *new_file)
                         }
                 }
         }
-        /* Allocate memory for the new subdirectory */
+        /* Allocate memory for the new file */
         current_node->current_dir->files[current_node->current_dir->number_of_files] = malloc(sizeof(File));
         if (current_node->current_dir->files[current_node->current_dir->number_of_files] == NULL)
         {
@@ -147,6 +147,9 @@ void appendFile(File *new_file)
         /* set parent */
         current_node->current_dir->files[current_node->current_dir->number_of_files]->parent = current_node->current_dir;
 
+	/* set path */
+	printf("location file: %s\n", new_file->location);
+	new_file->location = strdup(make_path(current_node->current_dir));
         /* Increment the number of subdirectories */
         current_node->current_dir->number_of_files++;
 }

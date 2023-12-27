@@ -67,7 +67,7 @@ typedef struct Dir
 	char *path;
 	int size;
 	char *dir_permissions;        /*"drwxrwxrwx"*/
-	struct Dir **subdirs;
+	Dir **subdirs;
 	File **files;
 	int number_of_files;
 	int number_of_sub_dirs;
@@ -89,6 +89,7 @@ Current *initialize_current_node();
 
 void create_root(Dir *root);
 Dir *create_dir(char *name);
+void delete_dir_name(const char *dir_name);
 void delete_dir(Dir *dir);
 void list_dir_content();
 void dir_info();
@@ -97,9 +98,11 @@ char *search_in_dir(char *searched_name);
 void get_back();
 void go_to_dir(char *name);
 void go_to_file(File *file);
-void appendSubdir(Dir *new_dir);
+void appendSubdir(Dir **new_dir);
 void appendFile(File *new_file);
 File *create_file(char *filename);
+char *make_path(Dir *dir);
+void get_to_root();
 
 /* file functions prototype */
 File *create_file(char *filename);
@@ -109,7 +112,10 @@ void copy_file(int id, char *path);
 void information_file(int id);
 void change_perm_file(int id, char *perm);
 void rename_file(int id, char *new_name);
-void delete_file(int id);
+void delete_file(File *file);
+File *find_file_by_id(int file_id);
+void delete_file_by_id(int file_id);
+/*void delete_file(int id);*/
 void appendFile(File *new_file);
 int get_id(char *file);
 File *get_file(int id);

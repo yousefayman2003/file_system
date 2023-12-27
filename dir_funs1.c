@@ -8,6 +8,7 @@ char *check_name_created(char *name);
  *
  *
  */
+
 Dir *create_dir(char *name)
 {
 	Dir *new_dir;
@@ -19,19 +20,20 @@ Dir *create_dir(char *name)
 		perror("memory allocation error");
 		exit(EXIT_FAILURE);
 	}
-	if (!name)
-		new_dir->name = check_name_created("New folder");
-	new_dir->name = check_name_created(name);
+	if (name[0] == '\0')
+		new_dir->name = check_name_created("New_folder");
+	else
+		new_dir->name = strdup(check_name_created(name));
 	new_dir->size = 0;
-	new_dir->dir_permissions = "drwxrwxr-x";
+	new_dir->dir_permissions = strdup("drwxrwxr-x");
 	time(&current_time);
 	new_dir->creation_time = current_time;
-	new_dir->creation_time = current_time;
-	printf("n: %d\n", current_node->current_dir->number_of_sub_dirs);
-	appendSubdir(new_dir);
+	new_dir->last_modification_time = current_time;
+	new_dir->parent = current_node->current_dir;
+        new_dir->path = strdup(make_path(new_dir));
+	appendSubdir(&new_dir);
 	return (new_dir);
 }
-
 /**
  *
  *
@@ -81,58 +83,119 @@ char *check_name_created(char *name)
  *
  *
  */
-/**void delete_dir(Dir *dir)
-{
-	File *filePtr = dir->first_file, *nextFile, *subDirPtr, *nextSubDir;
-	while (filePtr != NULL) {
-		nextFile = filePtr->nextSibling;
-		delete_file(filePtr);
-		filePtr = nextFile;
-	}
 
-	subDirPtr = dir->first_dir;
-	while (subDirPtr != NULL)
-	{
-		nextSubDir = subDirPtr->next_sibling;
-		delete_dir(subDirPtr);
-		subDirPtr = nextSubDir;
-	}
-	printf("Deleting directory: %s\n", dir->name);
-	free(dir);
-}*/
-/**	int i, found = 0;
-	Dir *dir_ptr = current_node->current_dir->first_dir;
+File *find_file_by_id(int file_id) {
+    for (int i = 0; i < current_node->current_dir->number_of_files; ++i) {
+        if (current_node->current_dir->files[i]->id == file_id) {
+            return current_node->current_dir->files[i];
+        }
+    }
+    return NULL; // File not found
+}
 
-	while (dir_ptr)
-	{
-		if (dir_ptr == dir)
-		{
-			found = 1;
-			break;
-		}
-	}
-	if (found == 0)
-	{
-		printf("required file not found in this directory\n");
-		return;
-	}
-	if (dir->name)
-		free(dir->name);
-	if (dir->dir_permissions)
-		free(dir->dir_permissions);
-	for (i = 0; i < dir->number_of_files; ++i)
-		delete_file(dir->files[i]);
-	if (dir->files)
-		free(dir->files);
+// Function to delete a File by ID
+void delete_file_by_id(int file_id) {
+    File *file = find_file_by_id(file_id);
+    if (file != NULL) {
+        // Free the file and update parent directory
+        delete_file(file);
+    } else {
+        printf("File not found with ID: %d\n", file_id);
+    }
+}
 
-	for (i = 0; i < dir->number_of_sub_dirs; ++i)
-		delete_dir(dir->subdirs[i]);
+void delete_file(File *file) {
+    if (file == NULL) {
+        return; // Do nothing if the file is already NULL
+    }
 
-	if (dir->subdirs)
-		free(dir->subdirs);
-	free(dir);
-}*/
+    // Free dynamically allocated fields
+    free(file->location);
+    free(file->content);
 
+    // Update parent directory's files array
+    if (file->parent != NULL) {
+        for (int i = 0; i < file->parent->number_of_files; ++i) {
+            if (file->parent->files[i] == file) {
+                // Shift remaining files to the left
+                for (int j = i; j < file->parent->number_of_files - 1; ++j) {
+                    file->parent->files[j] = file->parent->files[j + 1];
+                }
+                file->parent->number_of_files--;
+                break;
+            }
+        }
+    }
+
+    // Free the file itself
+    free(file);
+}
+
+// Function to delete a Dir by name
+void delete_dir_name(const char *dir_name) {
+    Dir *dir = NULL;
+
+    /**printf("dir name: %s\n", dir_name);
+    printf("array name: %s\n", current_node->current_dir->subdirs[0]->name);*/
+    // Search for the directory by name
+    // You may need to specify the directory in which to search, e.g., current_node->current_dir
+    // For simplicity, this example assumes you want to search in the root directory.
+    for (int i = 0; i < current_node->current_dir->number_of_sub_dirs; ++i) {
+        if (strcmp(current_node->current_dir->subdirs[i]->name, dir_name) == 0) {
+            dir = current_node->current_dir->subdirs[i];
+            break;
+        }
+    }
+
+    // If the directory is found, delete it
+    if (dir != NULL) {
+        // Free the directory and update parent directory
+        delete_dir(dir);
+    } else {
+        printf("Directory not found: %s\n", dir_name);
+    }
+}
+
+// Function to delete a Dir
+void delete_dir(Dir *dir) {
+    if (dir == NULL) {
+        return; // Do nothing if the directory is already NULL
+    }
+
+    // Free dynamically allocated fields
+    free(dir->name);
+    free(dir->path);
+    free(dir->dir_permissions);
+
+    // Recursively free subdirectories
+    for (int i = 0; i < dir->number_of_sub_dirs; ++i) {
+        delete_dir(dir->subdirs[i]);
+    }
+    free(dir->subdirs);
+
+    // Free files in the directory
+    for (int i = 0; i < dir->number_of_files; ++i) {
+        delete_file(dir->files[i]);
+    }
+    free(dir->files);
+
+    // Update parent directory's subdirectories array
+    if (dir->parent != NULL) {
+        for (int i = 0; i < dir->parent->number_of_sub_dirs; ++i) {
+            if (dir->parent->subdirs[i] == dir) {
+                // Shift remaining subdirectories to the left
+                for (int j = i; j < dir->parent->number_of_sub_dirs - 1; ++j) {
+                    dir->parent->subdirs[j] = dir->parent->subdirs[j + 1];
+                }
+                dir->parent->number_of_sub_dirs--;
+                break;
+            }
+        }
+    }
+
+    // Free the directory itself
+    free(dir);
+}
 /**
  *
  *
@@ -145,11 +208,18 @@ void list_dir_content()
 	int i;
 
 	for (i = 0; i < current_node->current_dir->number_of_sub_dirs; i++)
-		printf("%s\n", current_node->current_dir->subdirs[i]->name);
+	{
+		printf("%s/\n", current_node->current_dir->subdirs[i]->name);
+	}
 	for (i = 0; i < current_node->current_dir->number_of_files; i++)
-                printf("%s\n", current_node->current_dir->files[i]->name);
+	{
+                printf("%s", current_node->current_dir->files[i]->name);
+		if (current_node->current_dir->files[i]->type[0] != '\0')
+			printf(".%s\n", current_node->current_dir->files[i]->type);
+		else
+			printf("\n");
+	}
 }
-
 /**
  *
  *
@@ -170,48 +240,14 @@ void dir_info()
 		char modification_time_str[30];
 		strftime(modification_time_str, sizeof(modification_time_str), "%Y-%m-%d %H:%M:%S", localtime(&current_node->current_dir->last_modification_time));
 
-		printf("%s\t%d\t%s\t%s\t%s\n", 
+		printf("%s\tsize: %d\tcreation: %s\tmodification: %s\tname: %s\tpath: %s\n", 
 				current_node->current_dir->dir_permissions, 
 				current_node->current_dir->size, 
 				creation_time_str, 
-				modification_time_str, 
-				current_node->current_dir->name);
+				modification_time_str,
+				current_node->current_dir->name,
+				current_node->current_dir->path);
 	}
 	else
 		perror("No thing");
-}
-
-char *search_in_dir(char *searched_name)
-{
-	int i;
-
-	for (i = 0; i < current_node->current_dir->number_of_sub_dirs; i++)
-	{
-		if (strcmp(current_node->current_dir->subdirs[i]->name, searched_name) == 0)
-		{
-			printf("%s found here\n", searched_name);
-			return (current_node->current_dir->subdirs[i]->name);
-		}
-	}
-	for (i = 0; i < current_node->current_dir->number_of_files; i++)
-        {
-                if (strcmp(current_node->current_dir->files[i]->name, searched_name) == 0)
-		{
-			printf("%s found here\n", searched_name);
-			return (current_node->current_dir->files[i]->name);
-		}
-        }
-}
-
-/**
- *
- *
- *
- */
-void change_dir_permissions(char *permession)
-{
-	if (!current_node->current_dir)
-		return;
-	current_node->current_dir->dir_permissions = permession;
-	current_node->current_dir->last_modification_time = time(NULL);
 }

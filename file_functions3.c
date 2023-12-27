@@ -32,3 +32,24 @@ int get_id(char *file)
 	return (-1);
 
 }
+
+/**
+ * delete_file - Delete file
+ * @id: file id
+*/
+void delete_file(int id)
+{
+	File *file;
+
+	if (id == -1)
+	{
+		printf("Error: Found not found.\n");
+		return;
+	}
+	file = get_file(id);
+	if (file->content != NULL)
+		free(file->content);
+	if (file->location != NULL)
+		free(file->location);
+	free(file);
+}

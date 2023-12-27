@@ -149,12 +149,18 @@ int write_file(int id, char *content)
 /**
  * copy_file - copies a file
  * @id: file id
- * Return: Copied file, or NULL if failed
+ * @parent: parent directory.
 */
-File *copy_file(int id)
+void *copy_file(int id, char *parent)
 {
-	File *file = get_file(id);
-	File *copy = malloc(sizeof(File));
+	File *file, *copy;
+	if (id == -1)
+	{
+		printf("Error: File not found.\n");
+		return;
+	}
+	file = get_file(id);
+	copy = malloc(sizeof(File));
 	
 	if (file == NULL)
 		return NULL;

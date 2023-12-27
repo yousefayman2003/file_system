@@ -108,7 +108,7 @@ void get_to_root();
 File *create_file(char *filename);
 char *read_file(int id);
 int write_file(int id, char *content);
-File *copy_file(int id);
+void *copy_file(int id, char *parent);
 void information_file(int id);
 void change_perm_file(int id, char *perm);
 void rename_file(int id, char *new_name);

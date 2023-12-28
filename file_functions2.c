@@ -122,7 +122,7 @@ void rename_file(int id, char *new_name)
 */
 void appendFile(File *new_file)
 {
-	char *parent_path;
+        char *parent_path;
 
         if (current_node->current_dir->files == NULL)
         {
@@ -133,14 +133,14 @@ void appendFile(File *new_file)
                         exit(EXIT_FAILURE);
                 }
         }
-        else	
+        else
         {
-		static int max_files = INITIAL_FILE_SPACE;
-		
-		if (current_node->current_dir->number_of_files >= max_files)
+                static int max_files = INITIAL_FILE_SPACE;
+
+                if (current_node->current_dir->number_of_files >= max_files)
                 {
                         /* Reallocate memory for the files array */
-			max_files *= 2;
+                        max_files *= 2;
                         current_node->current_dir->files = realloc(current_node->current_dir->files, max_files * sizeof(File *));
                         if (current_node->current_dir->files == NULL)
                         {
@@ -168,10 +168,10 @@ void appendFile(File *new_file)
         /* set parent */
         current_node->current_dir->files[current_node->current_dir->number_of_files]->parent = current_node->current_dir;
 
-	/* set path */
-	parent_path = strdup(current_node->current_dir->path);
+        /* set path */
+        parent_path = strdup(current_node->current_dir->path);
         new_file->location = strdup(strcat(strcat(parent_path, "/"), new_file->name));
-	free(parent_path);
+        free(parent_path);
         /* Increment the number of subdirectories */
         current_node->current_dir->number_of_files++;
 }

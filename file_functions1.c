@@ -69,7 +69,6 @@ File *create_file(char *filename)
 	appendFile(file);
 	return (file);
 }
-
 /**
  * read_file - reads the content of a file
  * @id: file id
@@ -136,6 +135,38 @@ int write_file(int id, char *content)
 	time(&file->modification_time);
 
 	return (0);
+}
+
+/**
+ * copy_file - copies a file
+ * @file: file to copy
+ * Return: Copied file, or NULL if failed
+*/
+File *copy_file(File *file)
+{
+        File *copy = malloc(sizeof(File));
+
+        if (file == NULL)
+        {
+                printf("NULL\n");
+                return NULL;
+        }
+
+        /* Copy the attributes of the original file to the new file */
+        copy->id = file->id;
+        copy->size = file->size;
+        copy->blocks = file->blocks;
+        copy->creation_time = file->creation_time;
+        copy->modification_time = file->modification_time;
+        copy->access_time = file->access_time;
+        /* Allocate memory for string attributes and copy content */
+        strcpy(copy->name, file->name);
+        strcpy(copy->type, file->type);
+
+        copy->content =  strdup(file->content);
+        copy->location = strdup(file->location);
+        strcpy(copy->protection, file->protection);
+        return (copy);
 }
 
 /**

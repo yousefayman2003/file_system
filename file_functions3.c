@@ -94,44 +94,44 @@ char **get_tokens(const char *input, int *num_tokens) {
 */
 void move_file(int id, char *location, int delete)
 {
-	File *file;
-	Dir *prev_curr = current_node->current_dir;
-	char **tokens, *dir_name;
-	int num_tokens, i, j, found = 0;
-	if (id == -1)
-	{
-		printf("Error: File not found\n");
-		return;
-	}
-	file = get_file(id);
-	tokens = get_tokens(location, &num_tokens);
-	
-	/* Get back to root node */
-	while (current_node->current_dir->parent != NULL)
-		current_node->current_dir = current_node->current_dir->parent;	
+        File *file;
+        Dir *prev_curr = current_node->current_dir;
+        char **tokens, *dir_name;
+        int num_tokens, i, j, found = 0;
+        if (id == -1)
+        {
+                printf("Error: File not found\n");
+                return;
+        }
+        file = get_file(id);
+        tokens = get_tokens(location, &num_tokens);
 
-	for (i = 1; i < num_tokens; i++)
-	{
-		for (j = 0; j < current_node->current_dir->number_of_sub_dirs; j++)
-        	{
-                	dir_name = current_node->current_dir->subdirs[j]->name;
-			if (strcmp(dir_name, tokens[i]) == 0)
-			{
-				current_node->current_dir = current_node->current_dir->subdirs[j];
-				found = 1;
-				break;
-			}
-			found = 0;
-        	}
-		if (found == 0)
-			break;
-	}
-	if (found == 1)
-		appendFile(file);
-	else
-		printf("Error: Path not found.\n");
-	current_node->current_dir = prev_curr;
-	
-	/*if (delete == 1)
-		delete_file(id);*/
+        /* Get back to root node */
+        while (current_node->current_dir->parent != NULL)
+                current_node->current_dir = current_node->current_dir->parent;
+
+        for (i = 1; i < num_tokens; i++)
+        {
+                for (j = 0; j < current_node->current_dir->number_of_sub_dirs; j++)
+                {
+                        dir_name = current_node->current_dir->subdirs[j]->name;
+                        if (strcmp(dir_name, tokens[i]) == 0)
+                        {
+                                current_node->current_dir = current_node->current_dir->subdirs[j];
+                                found = 1;
+                                break;
+                        }
+                        found = 0;
+                }
+                if (found == 0)
+                        break;
+        }
+        if (found == 1)
+                appendFile(copy_file(file));
+        else
+                printf("Error: Path not found.\n");
+        current_node->current_dir = prev_curr;
+
+        if (delete == 1 && found == 1)
+                delete_file(file);
 }

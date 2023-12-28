@@ -99,26 +99,23 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 	}
 	else if (strcmp(command, "cd") == 0)
 	{
-		/*if (args[0][0] == '\0')
-		{
-			current_node->current_dir = &root;
-		}*/
 		if (strcmp(args[0], "-") == 0)
 			get_back();
 		else
 			go_to_dir(args[0]);
 		status = 0;
 	}
-	/*else if (strcmp(command, "rm") == 0)
+	else if (strcmp(command, "rm") == 0)
 	{
 		delete_dir_name(args[0]);
 		status = 0;
-	}*/
-	/**else if (strcmp(args[0], "rm_f"))
+	}
+	else if (strcmp(command, "rm_f") == 0)
         {
-                find(args[1]);
+		id = get_id(args[0]);
+                delete_file(get_file(id));
                 status = 0;
-        }*/
+        }
 	else if (strcmp(command, "rename") == 0)
 	{
 		id = get_id(args[0]);

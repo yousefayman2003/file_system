@@ -99,50 +99,49 @@ Current *initialize_current_node()
 	}
 	return node;
 }
-
 void appendSubdir(Dir **new_dir)
 {
-	if (current_node->current_dir->subdirs == NULL)
-	{
-		current_node->current_dir->subdirs = malloc(sizeof(Dir *));
-		if (current_node->current_dir->subdirs == NULL)
-		{
-			fprintf(stderr, "Memory allocation error\n");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		/**if (current_node->current_dir->number_of_sub_dirs == (sizeof(current_node->current_dir->subdirs) / sizeof(Dir *)))
-		{*/
-			/* Reallocate memory for the subdirs array */
-		current_node->current_dir->subdirs = realloc(current_node->current_dir->subdirs, ((current_node->current_dir->number_of_sub_dirs + 1) * 3) * sizeof(Dir *));
-		if (current_node->current_dir->subdirs == NULL)
-		{
-			fprintf(stderr, "Memory allocation error\n");
-			exit(EXIT_FAILURE);
-		}
-		/*}*/
-	}
-	/* Allocate memory for the new subdirectory */
-	current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = malloc(sizeof(Dir *));
-	if (current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] == NULL)
-	{
-		fprintf(stderr, "Memory allocation error\n");
-		exit(EXIT_FAILURE);
-	}
+        if (current_node->current_dir->subdirs == NULL)
+        {
+                current_node->current_dir->subdirs = malloc(INITIAL_FILE_SPACE * sizeof(Dir *));
+                if (current_node->current_dir->subdirs == NULL)
+                {
+                        fprintf(stderr, "Memory allocation error\n");
+                        exit(EXIT_FAILURE);
+                }
+        }
+        else
+        {
+                static int max_files = INITIAL_FILE_SPACE;
 
-	/* Initialize the subdirectory */
-	current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = *new_dir;
-	if (current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] == NULL)
-	{
-		fprintf(stderr, "Memory allocation error\n");
-		exit(EXIT_FAILURE);
-	}
+                if (current_node->current_dir->number_of_sub_dirs >= max_files)
+                {
+                        /* Reallocate memory for the files array */
+                        max_files *= 2;
+                        current_node->current_dir->subdirs = realloc(current_node->current_dir->subdirs, max_files * sizeof(Dir *));
+                        if (current_node->current_dir->subdirs == NULL)
+                        {
+                                fprintf(stderr, "Memory allocation error\n");
+                                exit(EXIT_FAILURE);
+                        }
+                }
+        }
+        /* Allocate memory for the new file */
+        current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = malloc(sizeof(Dir));
+        if (current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] == NULL)
+        {
+                fprintf(stderr, "Memory allocation error\n");
+                exit(EXIT_FAILURE);
+        }
 
-	/*printf("%s\n", current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs]->path);*/
-	/* set parent */
+        /* Initialize the subdirectory */
+        current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] = *new_dir;
+        if (current_node->current_dir->subdirs[current_node->current_dir->number_of_sub_dirs] == NULL)
+        {
+                fprintf(stderr, "Memory allocation error\n");
+                exit(EXIT_FAILURE);
+        }
 
-	/* Increment the number of subdirectories */
-	current_node->current_dir->number_of_sub_dirs++;
+        /* Increment the number of subdirectories */
+        current_node->current_dir->number_of_sub_dirs++;
 }

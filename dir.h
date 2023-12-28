@@ -10,7 +10,6 @@
 #define MAX_TYPE_LENGTH 64
 #define MAX_PROTECTION_LENGTH 4
 #define BLOCK_SIZE 32
-
 #define MAX_COMMAND_LENGTH 50
 #define MAX_ARGS_LENGTH 50
 #define MAX_TOTAL_ARGS 10
@@ -121,6 +120,7 @@ void appendFile(File *new_file);
 int get_id(char *file);
 File *get_file(int id);
 void move_file(int id, char *location, int delete);
+File *copy_file(File *file);
 
 /* helper functions prototype */
 void get_chars_before_dot(char *input, char *result);

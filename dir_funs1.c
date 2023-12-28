@@ -74,6 +74,7 @@ char *check_name_created(char *name)
 	return name;
 }
 
+
 /**
  *
  *
@@ -83,60 +84,40 @@ char *check_name_created(char *name)
  *
  *
  */
-
-File *find_file_by_id(int file_id) {
-    for (int i = 0; i < current_node->current_dir->number_of_files; ++i) {
-        if (current_node->current_dir->files[i]->id == file_id) {
-            return current_node->current_dir->files[i];
+void delete_file(File *file)
+{
+        if (file == NULL) {
+                return;       /* Do nothing if the file is already NULL */
         }
-    }
-    return NULL; // File not found
-}
 
-// Function to delete a File by ID
-void delete_file_by_id(int file_id) {
-    File *file = find_file_by_id(file_id);
-    if (file != NULL) {
-        // Free the file and update parent directory
-        delete_file(file);
-    } else {
-        printf("File not found with ID: %d\n", file_id);
-    }
-}
-
-void delete_file(File *file) {
-    if (file == NULL) {
-        return; // Do nothing if the file is already NULL
-    }
-
-    // Free dynamically allocated fields
-    free(file->location);
-    free(file->content);
-
-    // Update parent directory's files array
-    if (file->parent != NULL) {
-        for (int i = 0; i < file->parent->number_of_files; ++i) {
-            if (file->parent->files[i] == file) {
-                // Shift remaining files to the left
-                for (int j = i; j < file->parent->number_of_files - 1; ++j) {
-                    file->parent->files[j] = file->parent->files[j + 1];
+    /* Free dynamically allocated fields */
+        if (file->location)
+                free(file->location);
+/**    if (file->content)
+            free(file->content);
+*/
+    /* Update parent directory's files array */
+        if (file->parent != NULL) {
+                for (int i = 0; i < file->parent->number_of_files; ++i)
+                {
+                        if (file->parent->files[i] == file) {
+                                /* Shift remaining files to the left */
+                                for (int j = i; j < file->parent->number_of_files - 1; ++j)
+                                {
+                                        file->parent->files[j] = file->parent->files[j + 1];
+                                }
+                                file->parent->number_of_files--;
+                                break;
+                        }
                 }
-                file->parent->number_of_files--;
-                break;
-            }
         }
-    }
-
-    // Free the file itself
-    free(file);
+        /* Free the file itself */
+        free(file);
 }
 
-// Function to delete a Dir by name
 void delete_dir_name(const char *dir_name) {
     Dir *dir = NULL;
 
-    /**printf("dir name: %s\n", dir_name);
-    printf("array name: %s\n", current_node->current_dir->subdirs[0]->name);*/
     // Search for the directory by name
     // You may need to specify the directory in which to search, e.g., current_node->current_dir
     // For simplicity, this example assumes you want to search in the root directory.
@@ -163,22 +144,26 @@ void delete_dir(Dir *dir) {
     }
 
     // Free dynamically allocated fields
-    free(dir->name);
-    free(dir->path);
-    free(dir->dir_permissions);
+    if (dir->name)
+        free(dir->name);
+    if (dir->path)
+        free(dir->path);
+    if (dir->dir_permissions)
+        free(dir->dir_permissions);
 
     // Recursively free subdirectories
     for (int i = 0; i < dir->number_of_sub_dirs; ++i) {
         delete_dir(dir->subdirs[i]);
+        dir->subdirs[i] = NULL;
     }
     free(dir->subdirs);
 
     // Free files in the directory
     for (int i = 0; i < dir->number_of_files; ++i) {
         delete_file(dir->files[i]);
+        dir->files[i] = NULL;
     }
     free(dir->files);
-
     // Update parent directory's subdirectories array
     if (dir->parent != NULL) {
         for (int i = 0; i < dir->parent->number_of_sub_dirs; ++i) {
@@ -196,9 +181,8 @@ void delete_dir(Dir *dir) {
     // Free the directory itself
     free(dir);
 }
-/**
- *
- *
+
+ /*
  *
  *
  *

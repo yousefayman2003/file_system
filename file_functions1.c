@@ -1,4 +1,3 @@
-/*#include "file.h"*/
 #include "dir.h"
 /* Counter for file identifiers */
 static int file_count = 0;
@@ -127,7 +126,7 @@ int write_file(int id, char *content)
 
 	/* Calculate size */
 	file->size = ((double)sizeof(content) / 1000.0);
-	
+	current_node->current_dir->size += file->size;	
 	/* Calculate blocks */
 	file->blocks = (sizeof(content) / BLOCK_SIZE) + 1;
 	

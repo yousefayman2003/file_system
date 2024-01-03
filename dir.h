@@ -54,19 +54,26 @@ typedef struct File {
     char *content;
 } File;
 
-/**
- * Dir - is a struct representing Linux directory.
+/** 
+ * Dir - Structure representing a directory.
  * @name: Name of the directory.
- * @path: path to the file.
- * @files: Files represents in the directory.
- * @subdirs: Subdirs in the directory.
+ * @parent: Pointer to the parent directory (NULL if it's the root directory).
+ * @path: Full path of the directory.
+ * @size: Size of the directory.
+ * @dir_permissions: Permissions of the directory (e.g., "drwxrwxrwx").
+ * @subdirs: Array of pointers to subdirectories.
+ * @files: Array of pointers to files.
+ * @number_of_files: Number of files in the directory.
+ * @number_of_sub_dirs: Number of subdirectories in the directory.
+ * @creation_time: Time when the directory was created.
+ * @last_modification_time: Time of the last modification to the directory.
  */
 typedef struct Dir
 {
 	char *name;
 	struct Dir *parent;
 	char *path;
-	int size;
+	double size;
 	char *dir_permissions;        /*"drwxrwxrwx"*/
 	Dir **subdirs;
 	File **files;
@@ -75,7 +82,11 @@ typedef struct Dir
 	time_t creation_time;
 	time_t last_modification_time;
 } Dir;
-
+/** 
+ * Current - Structure representing the current state of the file system.
+ * @current_dir: Pointer to the current directory.
+ * @current_file: Pointer to the current file (NULL if not in a file).
+ */
 typedef struct Current
 {
 	Dir *current_dir;

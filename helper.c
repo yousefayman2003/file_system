@@ -18,6 +18,9 @@ void help()
 	printf("cd: changes directory.\nUsage: cd (directory name)\n\n");
 	printf("copy: Copies a file to a specific location.\nUsage: copy (filename) (path)\n\n");
 	printf("move: moves a file to a specific location.\nUsage: move (filename) (path)\n\n");
+	printf("rm: removes a directory from file system.\nUsage: rm (directory name)\n\n");
+	printf("rm_f: removes a file from file system.\nUsage: rm_f (filename)\n\n");
+	printf("chmod_d: changes permission of directory.\nUsage: chmod_d (directory name)\n\n");
 }
 
 /**
@@ -163,11 +166,10 @@ int handle_command(char *command, char args[MAX_TOTAL_ARGS][MAX_ARGS_LENGTH])
 		move_file(id, args[1], 0);
 		status = 0;
 	}
-	/*else if (strcmp(command, "delete") == 0)
+	else if(strcmp(command, "chmod_d") == 0)
 	{
-		id = get_id(args[0]);
-		delete_file(id);
+		change_dir_permissions(args[0]);
 		status = 0;
-	}*/
+	}
 	return (status);
 }

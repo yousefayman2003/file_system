@@ -1,4 +1,10 @@
 #include "dir.h"
+/** 
+ * create_root - Creates the root directory and initializes its attributes.
+ * @root: Pointer to the Dir structure for the root directory.
+ *
+ * Return: None.
+ */
 void create_root(Dir *root)
 {
 	root = malloc(sizeof(Dir));
@@ -23,7 +29,11 @@ void create_root(Dir *root)
 	
 	current_node->current_dir = root;
 }
-
+/** 
+ * get_back - Moves back to the parent directory or exits if already in the root.
+ *
+ * Return: None.
+ */
 void get_back()
 {
 	if (current_node->current_file != NULL)
@@ -36,14 +46,12 @@ void get_back()
 	else
 		current_node->current_dir = current_node->current_dir->parent;
 }
-
-
-void get_to_root()
-{
-
-	current_node->current_dir = &root;
-}
-
+/** 
+ * go_to_dir - Moves to the specified subdirectory within the current directory.
+ * @name: Name of the target subdirectory.
+ *
+ * Return: None.
+ */
 void go_to_dir(char *name)
 {
 	int i;
@@ -66,7 +74,12 @@ void go_to_dir(char *name)
 	if (found == 0)
                 perror("directory not found\n");
 }
-
+/** 
+ * go_to_file - Moves to the specified file within the current directory.
+ * @file: Pointer to the File structure of the target file.
+ *
+ * Return: None.
+ */
 void go_to_file(File *file)
 {
         int i;
@@ -89,7 +102,11 @@ void go_to_file(File *file)
 	if (found == 0)
 		perror("file not found\n");
 }
-
+/** 
+ * initialize_current_node - Initializes the current node structure.
+ *
+ * Return: Pointer to the initialized Current structure.
+ */
 Current *initialize_current_node()
 {
 	Current *node = (Current*)malloc(sizeof(Current));
@@ -99,6 +116,12 @@ Current *initialize_current_node()
 	}
 	return node;
 }
+/**
+ * appendSubdir - Appends a new subdirectory to the current directory.
+ * @new_dir: Pointer to the Dir structure of the new subdirectory.
+ *
+ * Return: None.
+ */
 void appendSubdir(Dir **new_dir)
 {
         if (current_node->current_dir->subdirs == NULL)
